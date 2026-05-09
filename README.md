@@ -57,9 +57,9 @@ npm install
 3. Create your .env file
 Create a file called .env in the root of the project and add the following:
 env
-MONGO_URI=mongodb+srv://602125_db_user:YOUR_PASSWORD@eventplatformcluster.kq2ojsg.mongodb.net/eventdb?retryWrites=true&w=majority&appName=EventPlatformCluster
-SESSION_SECRET=eventplatformcluster_2026
-PORT=3000
+MONGO_URI=
+SESSION_SECRET=
+PORT=
 
 ⚠️ Replace YOUR_PASSWORD with the actual Atlas database password. Never commit this file to GitHub.
 
