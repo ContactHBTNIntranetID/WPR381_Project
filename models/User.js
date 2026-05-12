@@ -23,12 +23,22 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Password is required'],
       minlength: [6, 'Password must be at least 6 characters'],
+      select: false
     },
     role: {
       type: String,
       enum: ['user', 'admin'],
       default: 'user',
     },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    lastLogin: Date,
+    isActive: {
+        type: Boolean,
+        default: true
+    }
   },
   {
     timestamps: true, // auto adds createdAt and updatedAt
@@ -37,9 +47,10 @@ const userSchema = new mongoose.Schema(
 
 // Hash password before saving
 userSchema.pre('save', async function () {
-  if (!this.isModified('password')) return;
+  if (!this.isModified('password')) return next();
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+  next();
 });
 
 // Method to compare entered password with hashed one

@@ -7,12 +7,12 @@ A full-stack web application built for Advanced Events (Pty) Ltd to replace manu
 👥 Team Members & Roles
 NameStudent NoRole
 [Member 1][Name][Student No]Team Lead / Project Coordinator
-[Member 2][Name][Student No]Backend Developer
+[Member 2] Jininy Nkomo - 575936 - Backend Developer
 [Member 3][Name][Student No]Security / Auth Developer
 [Member 4][Name][Student No]Frontend Developer
 [Member 5] Eduard Herman - 602125 Database Engineer
 
-🛠️ Tech Stack
+Tech Stack
 
 Runtime: Node.js
 Framework: Express.js
@@ -25,7 +25,7 @@ Dev Tool: nodemon
 Version Control: Git & GitHub
 
 
-📂 Project Structure
+ Project Structure
 WPR381_PROJECT/
 │
 ├── config/
