@@ -1,6 +1,6 @@
 const rateLimit = require('express-rate-limit');
 
-// Strict limiter for login and register — prevents brute force attacks
+// Strict limiter for login and register this helps prevent brute force attacks -NB
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 10,                   // max 10 attempts per window
@@ -12,7 +12,7 @@ const authLimiter = rateLimit({
     legacyHeaders: false
 });
 
-// General API limiter — prevents abuse of other endpoints
+// General API limiter, this helps prevent abuse of other endpoints -NB
 const generalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100,

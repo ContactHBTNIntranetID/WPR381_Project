@@ -4,8 +4,8 @@ const dotenv = require('dotenv');
 const path = require('path');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const connectDB = require('./config/database');
-const sessionConfig = require('./config/session');
+const connectDB = require('./config/db');
+const sessionConfig = require('./config/configSession');
 const errorHandler = require('./middleware/errorHandler');
 const { generalLimiter } = require('./middleware/rateLimiter');
 
