@@ -10,16 +10,8 @@
 <body>
 
     <!-- NAVBAR -->
-    <div class="navbar">
-        <div class="logo">
-            <h2>Admin Panel</h2>
-        </div>
+   <%- include('partials/header') %>
 
-        <div class="nav-links">
-            <a href="/">Home</a>
-            <a href="/dashboard">Dashboard</a>
-        </div>
-    </div>
 
     <!-- ADMIN CONTENT -->
     <div class="container">
@@ -28,23 +20,61 @@
 
         <div class="events">
 
+            <!-- CREATE EVENT -->
             <div class="card">
                 <h3>Create Event</h3>
-                <p>Add new events to the system</p>
-                <button>Create</button>
+                <form action="/admin-events/create" method="POST">
+                    <input type="text" name="title" placeholder="Title" required>
+                    <textarea name="description" placeholder="Description" required></textarea>
+                    <input type="text" name="location" placeholder="Location" required>
+                    <input type="date" name="date" required>
+                    <input type="number" name="capacity" placeholder="Capacity" min="1" required>
+                    <input type="number" name="price" placeholder="Price" min="0" required>
+                    <select name="category" required>
+                        <option value="conference">Conference</option>
+                        <option value="workshop">Workshop</option>
+                        <option value="festival">Festival</option>
+                        <option value="private">Private</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <button type="submit">Create</button>
+                </form>
             </div>
 
-            <div class="card">
-                <h3>Edit Events</h3>
-                <p>Update existing event details</p>
-                <button>Edit</button>
-            </div>
+            <!-- EXISTING EVENTS -->
+            <% if (events && events.length > 0) { %>
+                <% events.forEach(event => { %>
+                    <div class="card">
+                        <h3><%= event.title %></h3>
+                        <p><%= event.location %> | <%= event.date.toDateString() %></p>
+                        <p>Capacity: <%= event.capacity %> | Price: R <%= event.price %></p>
+                        <p>Status: <%= event.status %></p>
 
-            <div class="card">
-                <h3>Delete Events</h3>
-                <p>Remove cancelled events</p>
-                <button>Delete</button>
-            </div>
+                        <!-- UPDATE EVENT -->
+                        <form action="/admin-events/update/<%= event._id %>" method="POST">
+                            <input type="text" name="title" value="<%= event.title %>" required>
+                            <input type="text" name="location" value="<%= event.location %>" required>
+                            <input type="date" name="date" value="<%= event.date.toISOString().split('T')[0] %>" required>
+                            <input type="number" name="capacity" value="<%= event.capacity %>" min="1" required>
+                            <input type="number" name="price" value="<%= event.price %>" min="0" required>
+                            <select name="status" required>
+                                <option value="upcoming" <%= event.status === 'upcoming' ? 'selected' : '' %>>Upcoming</option>
+                                <option value="ongoing" <%= event.status === 'ongoing' ? 'selected' : '' %>>Ongoing</option>
+                                <option value="completed" <%= event.status === 'completed' ? 'selected' : '' %>>Completed</option>
+                                <option value="cancelled" <%= event.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                            </select>
+                            <button type="submit">Update</button>
+                        </form>
+
+                        <!-- DELETE EVENT -->
+                        <form action="/admin-events/delete/<%= event._id %>" method="POST">
+                            <button type="submit" style="background:red;">Delete</button>
+                        </form>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p>No events yet.</p>
+            <% } %>
 
         </div>
 

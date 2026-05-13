@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Advanced Events</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <%- include('partials/header') %>
+
+
+
+    <!-- DASHBOARD CONTAINER -->
+    <div class="container">
+
+        <h1>User Dashboard</h1>
+
+        <!-- STATS SECTION -->
+        <div class="events">
+
+            <div class="card">
+                <h3>Total Bookings</h3>
+                <p><%= bookings.length %></p>
+            </div>
+
+        </div>
+
+        <h2 style="margin-top:30px;">Your Bookings</h2>
+
+        <!-- BOOKINGS LIST -->
+        <div class="events">
+
+            <% if (bookings && bookings.length > 0) { %>
+
+                <% bookings.forEach(booking => { %>
+
+                    <div class="card">
+  <h3><%= booking.eventId.title %></h3>
+  <p><strong>Tickets:</strong> <%= booking.ticketCount %></p>
+  <p><strong>Status:</strong> <%= booking.status %></p>
+
+  <% if (booking.status === 'confirmed') { %>
+    <form action="/bookings/cancel/<%= booking._id %>" method="POST">
+      <button type="submit" style="background:red;">Cancel Booking</button>
+    </form>
+  <% } %>
+</div>
+
+                <% }) %>
+
+            <% } else { %>
+
+                <p>No bookings yet.</p>
+
+            <% } %>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

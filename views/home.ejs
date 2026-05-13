@@ -10,18 +10,9 @@
     <body>
 
         <!-- NAVBAR (PAGE SWITCHING) -->
-        <div class="navbar">
-            <div class="logo">
-                <h2>Advanced Events</h2>
-            </div>
+      <%- include('partials/header') %>
 
-            <div class="nav-links">
-                <a href="/">Home</a>
-                <a href="/login">Login</a>
-                <a href="/register">Register</a>
-                <a href="/contact">Contact</a>
-            </div>
-        </div>
+
 
         <!-- HERO SECTION -->
         <div class="hero">
@@ -53,9 +44,11 @@
                                 <strong>R <%= event.price %></strong>
                             </div>
 
-                            <button style="margin-top:10px; width:100%;">
-                                Book Ticket
-                            </button>
+                            <form action="/book" method="POST">
+    <input type="hidden" name="eventId" value="<%= event._id %>">
+    <input type="number" name="ticketCount" value="1" min="1" max="<%= event.ticketsRemaining %>">
+    <button type="submit">Book Ticket</button>
+</form>
                         </div>
 
                     <% }) %>

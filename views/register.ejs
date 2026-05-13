@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Register | Advanced Events</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+   <%- include('partials/header') %>
+
+
+
+    <!-- REGISTER FORM -->
+    <div class="auth-box">
+
+        <h2 class="center">Create Account</h2>
+
+        <!-- register.ejs -->
+<form action="/register" method="POST">
+    <input type="text" name="name" placeholder="Full Name" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <button type="submit">Create Account</button>
+</form>
+
+        <p class="center" style="margin-top:10px;">
+            Already have an account?
+            <a href="/login">Login</a>
+        </p>
+
+    </div>
+
+</body>
+</html>

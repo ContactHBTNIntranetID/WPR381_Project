@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Enquiries | Advanced Events</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <%- include('partials/header') %>
+
+  <div class="container">
+    <h1>Manage Enquiries</h1>
+
+    <% if (enquiries && enquiries.length > 0) { %>
+      <% enquiries.forEach(enq => { %>
+        <div class="card">
+          <h3><%= enq.subject %></h3>
+          <p><%= enq.message %></p>
+          <p>User: <%= enq.userId ? enq.userId.name : "Guest" %> 
+             (<%= enq.userId ? enq.userId.email : "N/A" %>)</p>
+          <p>Status: <%= enq.status %></p>
+
+          <form action="/enquiries/update/<%= enq._id %>" method="POST">
+            <select name="status">
+              <option value="unread" <%= enq.status === 'unread' ? 'selected' : '' %>>Unread</option>
+              <option value="read" <%= enq.status === 'read' ? 'selected' : '' %>>Read</option>
+              <option value="resolved" <%= enq.status === 'resolved' ? 'selected' : '' %>>Resolved</option>
+            </select>
+            <button type="submit">Update</button>
+          </form>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <p>No enquiries yet.</p>
+    <% } %>
+  </div>
+
+</body>
+</html>

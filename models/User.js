@@ -23,22 +23,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Password is required'],
       minlength: [6, 'Password must be at least 6 characters'],
-      select: false
     },
     role: {
       type: String,
       enum: ['user', 'admin'],
       default: 'user',
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    lastLogin: Date,
-    isActive: {
-        type: Boolean,
-        default: true
-    }
   },
   {
     timestamps: true, // auto adds createdAt and updatedAt

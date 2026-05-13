@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard | Advanced Events</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <div class="container">
+    <h1>Admin Dashboard</h1>
+
+    <div class="card">
+      <h3>Total Bookings</h3>
+      <p><%= totalBookings %></p>
+    </div>
+
+   <div class="card">
+    <h3>Popular Events</h3>
+      <ul>
+        <% popularEvents.forEach(ev => { %>
+        <li><%= ev.eventDetails.title %> — <%= ev.totalTickets %> tickets</li>
+        <% }) %>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Capacity Usage</h3>
+      <table>
+        <tr><th>Event</th><th>Used</th><th>Capacity</th></tr>
+        <% capacityUsage.forEach(ev => { %>
+          <tr>
+            <td><%= ev.title %></td>
+            <td><%= ev.used %></td>
+            <td><%= ev.capacity %></td>
+          </tr>
+        <% }) %>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

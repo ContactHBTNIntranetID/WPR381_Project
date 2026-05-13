@@ -22,28 +22,28 @@ const seed = async () => {
   // ── USERS ──────────────────────────────────────────────────────────────────
   console.log('Creating users...');
 
-  const hashedAdmin = await bcrypt.hash('admin123', 10);
+ /*  const hashedAdmin = await bcrypt.hash('admin123', 10);
   const hashedUser1 = await bcrypt.hash('user123', 10);
   const hashedUser2 = await bcrypt.hash('user123', 10);
-
+ */
   const admin = await User.create({
     name: 'Admin User',
     email: 'admin@advancedevents.co.za',
-    password: hashedAdmin,
+    password: 'admin123',
     role: 'admin',
   });
 
   const user1 = await User.create({
     name: 'Jane Doe',
     email: 'jane@example.com',
-    password: hashedUser1,
+    password: 'user123',
     role: 'user',
   });
 
   const user2 = await User.create({
     name: 'John Smith',
     email: 'john@example.com',
-    password: hashedUser2,
+    password: 'user123',
     role: 'user',
   });
 
@@ -58,7 +58,6 @@ const seed = async () => {
       category: 'conference',
       date: new Date('2026-08-15'),
       location: 'Sandton Convention Centre, Johannesburg',
-      venue: 'Sandton Convention Centre',
       capacity: 300,
       price: 750,
       status: 'upcoming',
@@ -70,7 +69,6 @@ const seed = async () => {
       category: 'workshop',
       date: new Date('2026-09-05'),
       location: 'Cape Town CBD, Cape Town',
-      venue: 'Cape Town CBD Training Centre',
       capacity: 50,
       price: 200,
       status: 'upcoming',
@@ -82,7 +80,6 @@ const seed = async () => {
       category: 'festival',
       date: new Date('2026-10-20'),
       location: 'Constitution Hill, Johannesburg',
-      venue: 'Constitution Hill Grounds',
       capacity: 2000,
       price: 350,
       status: 'upcoming',
@@ -94,7 +91,6 @@ const seed = async () => {
       category: 'private',
       date: new Date('2026-11-10'),
       location: 'The Venue, Melrose Arch, Johannesburg',
-      venue: 'The Venue, Melrose Arch',
       capacity: 100,
       price: 1500,
       status: 'upcoming',
@@ -106,7 +102,6 @@ const seed = async () => {
       category: 'workshop',
       date: new Date('2026-07-22'),
       location: 'Rosebank, Johannesburg',
-      venue: 'Rosebank Conference Centre',
       capacity: 80,
       price: 450,
       status: 'upcoming',

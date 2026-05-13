@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Contact | Advanced Events</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <%- include('partials/header') %>
+
+
+
+    <!-- CONTACT -->
+    <div class="container">
+
+        <h1>Contact Us</h1>
+
+        <div class="auth-box">
+
+            <!-- contact.ejs -->
+<form action="/contact" method="POST">
+    <input type="text" name="name" placeholder="Name" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="text" name="subject" placeholder="Subject" required>
+    <textarea name="message" placeholder="Message" rows="5" required></textarea>
+    <button type="submit">Send Message</button>
+</form>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
