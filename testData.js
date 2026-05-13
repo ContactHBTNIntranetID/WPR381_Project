@@ -61,6 +61,7 @@ const runTest = async () => {
     category: 'other',
     date: new Date(),
     location: 'Pretoria',
+    venue: 'Pretoria Test Venue', 
     capacity: 50,
     price: 100,
   });
