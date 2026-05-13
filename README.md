@@ -38,7 +38,7 @@ The platform replaces manual spreadsheets and disconnected tools with a secure, 
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/WPR381_PROJECT.git
+   git clone : https://github.com/ContactHBTNIntranetID/WPR381_Project
    cd WPR381_PROJECT
 
 2. Install dependencies
