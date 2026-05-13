@@ -21,7 +21,7 @@ Database: MongoDB Atlas (M0 Free Tier)
 ODM: Mongoose
 Auth: express-session + bcrypt
 Styling: Bootstrap / Tailwind CSS
-Dev Tool: nodemon
+Dev Tool: nodemon , Mongo Compass
 Version Control: Git & GitHub
 
 
@@ -47,13 +47,16 @@ WPR381_PROJECT/
 └── README.md
 
 ⚙️ Setup Instructions
+
 1. Clone the repository
 bash
 git clone https://github.com/yourusername/WPR381_PROJECT.git
 cd WPR381_PROJECT
+
 2. Install dependencies
 bash
 npm install
+
 3. Create your .env file
 Create a file called .env in the root of the project and add the following:
 env
@@ -73,12 +76,14 @@ Expected output:
    ADMIN → admin@advancedevents.co.za | password: admin123
    USER1 → jane@example.com           | password: user123
    USER2 → john@example.com           | password: user123
+
 5. Run the development server
 bash
 npm run dev
 Or without nodemon:
 bash
 node app.js
+
 6. Open in browser
 http://localhost:3000
 
