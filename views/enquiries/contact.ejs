@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Us | Advanced Events</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo"><h2>Advanced Events</h2></div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <% if (typeof user !== 'undefined' && user) { %>
+                <a href="/dashboard/user">Dashboard</a>
+                <a href="/auth/logout">Logout</a>
+            <% } else { %>
+                <a href="/auth/login">Login</a>
+            <% } %>
+        </div>
+    </div>
+
+    <div class="auth-box" style="max-width:600px;">
+        <h2>Contact Us</h2>
+
+        <% if (typeof success !== 'undefined' && success) { %>
+            <p style="color:green;"><%= success %></p>
+        <% } %>
+        <% if (typeof error !== 'undefined' && error) { %>
+            <p style="color:red;"><%= error %></p>
+        <% } %>
+
+        <form action="/enquiries/submit" method="POST">
+            <input type="text" name="name" placeholder="Your Name" value="<%= (typeof user !== 'undefined' && user) ? user.name : '' %>" required>
+            <input type="email" name="email" placeholder="Your Email" value="<%= (typeof user !== 'undefined' && user) ? user.email : '' %>" required>
+            <input type="text" name="subject" placeholder="Subject" required>
+            <textarea name="message" placeholder="Your message..." rows="5" required></textarea>
+            <button type="submit">Send Enquiry</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,5 +1,4 @@
 const Event = require('../models/Event');
-const moment = require('moment');
 
 exports.getAllEvents = async (req, res) => {
     try {
@@ -65,8 +64,7 @@ exports.getAllEvents = async (req, res) => {
             events,
             categories,
             filters: req.query,
-            user: req.user,
-            moment
+            user: req.user
         });
     } catch (error) {
         console.error('Get events error:', error);
@@ -90,8 +88,7 @@ exports.getEventDetails = async (req, res) => {
         res.render('events/details', {
             title: event.title,
             event,
-            user: req.user,
-            moment
+            user: req.user
         });
     } catch (error) {
         console.error('Event details error:', error);
@@ -114,7 +111,6 @@ exports.createEvent = async (req, res) => {
     try {
         const eventData = {
             ...req.body,
-            availableTickets: req.body.totalCapacity,
             createdBy: req.user._id
         };
         
@@ -165,9 +161,9 @@ exports.updateEvent = async (req, res) => {
             });
         }
         
-        // Calculate new available tickets
-        const ticketDiff = req.body.totalCapacity - event.totalCapacity;
-        req.body.availableTickets = event.availableTickets + ticketDiff;
+        // Recalculate ticketsRemaining when capacity changes
+        const ticketDiff = req.body.capacity - event.capacity;
+        req.body.ticketsRemaining = (event.ticketsRemaining || 0) + ticketDiff;
         
         const updatedEvent = await Event.findByIdAndUpdate(
             req.params.id,

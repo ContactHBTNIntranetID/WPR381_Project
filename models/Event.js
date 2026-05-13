@@ -31,7 +31,6 @@ const eventSchema = new mongoose.Schema(
     },
     venue: {
         type: String,
-        required: [true, 'Venue is required'],
         trim: true
     },
     capacity: {
@@ -61,10 +60,11 @@ const eventSchema = new mongoose.Schema(
 );
 
 // Automatically set ticketsRemaining = capacity when a new event is created
-eventSchema.pre('save', async function () {
+eventSchema.pre('save', async function (next) {
   if (this.isNew) {
     this.ticketsRemaining = this.capacity;
   }
+  next();
 });
 
 module.exports = mongoose.model('Event', eventSchema);
