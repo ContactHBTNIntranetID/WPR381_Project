@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard | Advanced Events</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo"><h2>Advanced Events</h2></div>
+        <div class="nav-links">
+            <a href="/events">Events</a>
+            <a href="/events/admin/create">Create Event</a>
+            <a href="/enquiries/manage">Enquiries</a>
+            <a href="/auth/logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+        <p>Welcome, <%= user.name %></p>
+
+        <div style="display:flex; gap:20px; flex-wrap:wrap; margin:20px 0;">
+            <div class="card"><h3><%= stats.totalEvents %></h3><p>Total Events</p></div>
+            <div class="card"><h3><%= stats.totalBookings %></h3><p>Total Bookings</p></div>
+            <div class="card"><h3><%= stats.totalUsers %></h3><p>Total Users</p></div>
+        </div>
+
+        <h2>Popular Events</h2>
+        <% if (popularEvents && popularEvents.length > 0) { %>
+            <ul>
+                <% popularEvents.forEach(e => { %>
+                    <li><%= e.event.title %> — <%= e.bookings %> bookings</li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p>No bookings yet.</p>
+        <% } %>
+
+        <h2>Recent Bookings</h2>
+        <% if (recentBookings && recentBookings.length > 0) { %>
+            <table style="width:100%; border-collapse:collapse;">
+                <thead>
+                    <tr style="background:#333; color:white;">
+                        <th style="padding:8px;">User</th>
+                        <th>Event</th>
+                        <th>Tickets</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% recentBookings.forEach(b => { %>
+                        <tr style="border-bottom:1px solid #ddd;">
+                            <td style="padding:8px;"><%= b.userId ? b.userId.name : 'Unknown' %></td>
+                            <td><%= b.eventId ? b.eventId.title : 'Unknown' %></td>
+                            <td><%= b.ticketCount %></td>
+                            <td><%= b.status %></td>
+                            <td><%= new Date(b.createdAt).toDateString() %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>No bookings yet.</p>
+        <% } %>
+
+        <h2>Capacity Usage</h2>
+        <% if (capacityUsage && capacityUsage.length > 0) { %>
+            <ul>
+                <% capacityUsage.forEach(c => { %>
+                    <li><%= c.title %>: <%= c.used %>/<%= c.total %> (<%= c.percentage.toFixed(1) %>%)</li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p>No events yet.</p>
+        <% } %>
+    </div>
+</body>
+</html>

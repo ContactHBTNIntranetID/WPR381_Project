@@ -46,8 +46,13 @@ const userSchema = new mongoose.Schema(
 );
 
 // Hash password before saving
+<<<<<<< HEAD
 userSchema.pre('save', async function () {
   if (!this.isModified('password')) return;
+=======
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+>>>>>>> 71198dab1fc187c0e84689bc55bf968289b12858
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
@@ -56,5 +61,8 @@ userSchema.pre('save', async function () {
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
+
+// Alias so authController.comparePassword() also works
+userSchema.methods.comparePassword = userSchema.methods.matchPassword;
 
 module.exports = mongoose.model('User', userSchema);

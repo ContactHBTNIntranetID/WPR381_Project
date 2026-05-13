@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Dashboard | Advanced Events</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo"><h2>Advanced Events</h2></div>
+        <div class="nav-links">
+            <a href="/events">Browse Events</a>
+            <a href="/bookings/my-bookings">My Bookings</a>
+            <a href="/enquiries/contact">Contact</a>
+            <a href="/auth/logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Welcome, <%= user.name %></h1>
+
+        <div style="display:flex; gap:20px; flex-wrap:wrap; margin:20px 0;">
+            <div class="card"><h3><%= stats.totalBookings %></h3><p>Total Bookings</p></div>
+        </div>
+
+        <h2>Recent Bookings</h2>
+        <% if (bookings && bookings.length > 0) { %>
+            <table style="width:100%; border-collapse:collapse;">
+                <thead>
+                    <tr style="background:#333; color:white;">
+                        <th style="padding:8px;">Event</th>
+                        <th>Date</th>
+                        <th>Tickets</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% bookings.forEach(b => { %>
+                        <tr style="border-bottom:1px solid #ddd;">
+                            <td style="padding:8px;"><%= b.eventId ? b.eventId.title : 'N/A' %></td>
+                            <td><%= b.eventId ? new Date(b.eventId.date).toDateString() : 'N/A' %></td>
+                            <td><%= b.ticketCount %></td>
+                            <td><%= b.status %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>No bookings yet. <a href="/events">Browse events</a></p>
+        <% } %>
+
+        <h2>Upcoming Events You Booked</h2>
+        <% if (upcomingBookings && upcomingBookings.length > 0) { %>
+            <ul>
+                <% upcomingBookings.forEach(b => { %>
+                    <% if (b.eventId) { %>
+                        <li><strong><%= b.eventId.title %></strong> — <%= new Date(b.eventId.date).toDateString() %></li>
+                    <% } %>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p>No upcoming bookings.</p>
+        <% } %>
+    </div>
+</body>
+</html>

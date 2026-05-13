@@ -5,62 +5,54 @@ const Enquiry = require('../models/Enquiry');
 
 exports.getAdminDashboard = async (req, res) => {
     try {
-        // Get statistics
         const totalEvents = await Event.countDocuments();
         const totalBookings = await Booking.countDocuments();
         const totalUsers = await User.countDocuments();
-        const totalRevenue = await Booking.aggregate([
-            { $match: { status: 'confirmed' } },
-            { $group: { _id: null, total: { $sum: '$totalAmount' } } }
-        ]);
-        
-        // Popular events
+
+        // Popular events — use correct schema field name: eventId (not event)
         const popularEvents = await Booking.aggregate([
             { $match: { status: 'confirmed' } },
-            { $group: { _id: '$event', bookings: { $sum: 1 }, tickets: { $sum: '$numberOfTickets' } } },
+            { $group: { _id: '$eventId', bookings: { $sum: 1 }, tickets: { $sum: '$ticketCount' } } },
             { $sort: { bookings: -1 } },
             { $limit: 5 },
             { $lookup: { from: 'events', localField: '_id', foreignField: '_id', as: 'event' } },
             { $unwind: '$event' }
         ]);
-        
-        // Recent bookings
+
+        // Recent bookings — populate using correct field names
         const recentBookings = await Booking.find()
-            .populate('user', 'name email')
-            .populate('event', 'title')
+            .populate('userId', 'name email')
+            .populate('eventId', 'title')
             .sort('-createdAt')
             .limit(10);
-        
-        // Capacity usage
+
+        // Capacity usage — capacity and ticketsRemaining are the actual schema fields
         const events = await Event.find();
-        const capacityUsage = events.map(event => ({
-            title: event.title,
-            used: event.bookedTickets,
-            total: event.totalCapacity,
-            percentage: (event.bookedTickets / event.totalCapacity) * 100
-        })).sort((a, b) => b.percentage - a.percentage).slice(0, 5);
-        
+        const capacityUsage = events.map(event => {
+            const used = event.capacity - event.ticketsRemaining;
+            return {
+                title: event.title,
+                used,
+                total: event.capacity,
+                percentage: event.capacity > 0 ? (used / event.capacity) * 100 : 0
+            };
+        }).sort((a, b) => b.percentage - a.percentage).slice(0, 5);
+
         // Monthly bookings trend
         const monthlyBookings = await Booking.aggregate([
             {
                 $group: {
                     _id: { $month: '$createdAt' },
-                    count: { $sum: 1 },
-                    revenue: { $sum: '$totalAmount' }
+                    count: { $sum: 1 }
                 }
             },
             { $sort: { '_id': 1 } }
         ]);
-        
+
         res.render('dashboard/admin', {
             title: 'Admin Dashboard',
             user: req.user,
-            stats: {
-                totalEvents,
-                totalBookings,
-                totalUsers,
-                totalRevenue: totalRevenue[0]?.total || 0
-            },
+            stats: { totalEvents, totalBookings, totalUsers },
             popularEvents,
             recentBookings,
             capacityUsage,
@@ -77,36 +69,27 @@ exports.getAdminDashboard = async (req, res) => {
 
 exports.getUserDashboard = async (req, res) => {
     try {
-        // Get user's bookings
-        const bookings = await Booking.find({ user: req.user._id })
-            .populate('event')
+        // Use correct schema field: userId (not user)
+        const bookings = await Booking.find({ userId: req.user._id })
+            .populate('eventId')
             .sort('-createdAt')
             .limit(10);
-        
-        // Statistics
-        const totalBookings = await Booking.countDocuments({ user: req.user._id });
-        const totalSpent = await Booking.aggregate([
-            { $match: { user: req.user._id, status: 'confirmed' } },
-            { $group: { _id: null, total: { $sum: '$totalAmount' } } }
-        ]);
-        
-        // Upcoming events
-        const upcomingBookings = await Booking.find({ 
-            user: req.user._id,
+
+        const totalBookings = await Booking.countDocuments({ userId: req.user._id });
+
+        const upcomingBookings = await Booking.find({
+            userId: req.user._id,
             status: 'confirmed'
         })
-            .populate('event')
-            .sort('event.date')
+            .populate('eventId')
+            .sort('-createdAt')
             .limit(5);
-        
+
         res.render('dashboard/user', {
             title: 'My Dashboard',
             user: req.user,
             bookings,
-            stats: {
-                totalBookings,
-                totalSpent: totalSpent[0]?.total || 0
-            },
+            stats: { totalBookings },
             upcomingBookings
         });
     } catch (error) {

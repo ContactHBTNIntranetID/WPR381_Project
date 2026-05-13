@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %> | Advanced Events</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo"><h2>Advanced Events</h2></div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/dashboard/user">My Dashboard</a>
+            <a href="/auth/logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="auth-box" style="max-width:500px;">
+        <h2>Book Tickets</h2>
+        <h3><%= event.title %></h3>
+        <p><strong>Date:</strong> <%= new Date(event.date).toDateString() %></p>
+        <p><strong>Location:</strong> <%= event.location %></p>
+        <p><strong>Price per ticket:</strong> R <%= event.price %></p>
+        <p><strong>Tickets available:</strong> <%= event.ticketsRemaining %></p>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+            <p style="color:red;"><%= error %></p>
+        <% } %>
+
+        <form action="/bookings/create" method="POST">
+            <input type="hidden" name="eventId" value="<%= event._id %>">
+            <label>Number of Tickets (max 10):</label>
+            <input type="number" name="ticketCount" min="1" max="<%= Math.min(event.ticketsRemaining, 10) %>" value="1" required>
+            <button type="submit">Confirm Booking</button>
+        </form>
+        <p><a href="/events/<%= event._id %>">&larr; Back to event</a></p>
+    </div>
+</body>
+</html>

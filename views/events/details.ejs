@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %> | Advanced Events</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo"><h2>Advanced Events</h2></div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <% if (typeof user !== 'undefined' && user) { %>
+                <a href="/dashboard/user">My Dashboard</a>
+                <a href="/auth/logout">Logout</a>
+            <% } else { %>
+                <a href="/auth/login">Login</a>
+            <% } %>
+        </div>
+    </div>
+
+    <div class="container" style="max-width:700px; margin:40px auto; padding:0 20px;">
+        <h1><%= event.title %></h1>
+        <p><strong>Category:</strong> <%= event.category %></p>
+        <p><strong>Date:</strong> <%= new Date(event.date).toDateString() %></p>
+        <p><strong>Location:</strong> <%= event.location %></p>
+        <% if (event.venue) { %><p><strong>Venue:</strong> <%= event.venue %></p><% } %>
+        <p><strong>Price:</strong> R <%= event.price %></p>
+        <p><strong>Tickets Remaining:</strong> <%= event.ticketsRemaining %></p>
+        <p><strong>Status:</strong> <%= event.status %></p>
+        <p style="margin-top:15px;"><%= event.description %></p>
+
+        <% if (typeof user !== 'undefined' && user && event.ticketsRemaining > 0 && event.status === 'upcoming') { %>
+            <a href="/bookings/event/<%= event._id %>">
+                <button style="margin-top:20px;">Book Tickets</button>
+            </a>
+        <% } else if (!user) { %>
+            <p><a href="/auth/login">Login</a> to book tickets.</p>
+        <% } else if (event.ticketsRemaining === 0) { %>
+            <p><strong>Sold out.</strong></p>
+        <% } %>
+
+        <% if (typeof user !== 'undefined' && user && user.role === 'admin') { %>
+            <div style="margin-top:20px;">
+                <a href="/events/admin/edit/<%= event._id %>"><button>Edit Event</button></a>
+                <form action="/events/admin/delete/<%= event._id %>" method="POST" style="display:inline;">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" onclick="return confirm('Delete this event?')">Delete</button>
+                </form>
+            </div>
+        <% } %>
+
+        <p style="margin-top:20px;"><a href="/events">&larr; Back to events</a></p>
+    </div>
+</body>
+</html>

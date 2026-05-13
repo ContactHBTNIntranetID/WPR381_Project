@@ -1,4 +1,4 @@
-const MongoStore = require('connect-mongo');
+const MongoStore = require('connect-mongo').default || require('connect-mongo');
 
 module.exports = {
     secret: process.env.SESSION_SECRET,
@@ -10,7 +10,7 @@ module.exports = {
         maxAge: 1000 * 60 * 60 * 24 // 24 hours
     },
     store: MongoStore.create({
-        mongoUrl: process.env.MONGODB_URI,
+        mongoUrl: process.env.MONGO_URI,
         ttl: 24 * 60 * 60 // 1 day
     })
 };

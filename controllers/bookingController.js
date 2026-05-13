@@ -10,7 +10,7 @@ exports.showBookingPage = async (req, res) => {
                 user: req.user
             });
         }
-        
+
         res.render('bookings/create', {
             title: `Book Tickets - ${event.title}`,
             event,
@@ -28,59 +28,50 @@ exports.showBookingPage = async (req, res) => {
 
 exports.createBooking = async (req, res) => {
     try {
-        const { eventId, numberOfTickets, attendeeDetails } = req.body;
-        
+        const { eventId, ticketCount } = req.body;
+        const count = parseInt(ticketCount);
+
         const event = await Event.findById(eventId);
         if (!event) {
-            return res.status(404).json({
-                success: false,
-                message: 'Event not found'
-            });
+            return res.status(404).json({ success: false, message: 'Event not found' });
         }
-        
-        // Validate ticket availability
-        if (!event.checkAvailability(parseInt(numberOfTickets))) {
+
+        // Manual availability check (checkAvailability method does not exist on model)
+        if (event.ticketsRemaining < count) {
             return res.status(400).json({
                 success: false,
-                message: 'Insufficient tickets available'
+                message: `Only ${event.ticketsRemaining} ticket(s) remaining`
             });
         }
-        
-        // Calculate total amount
-        const totalAmount = event.price * parseInt(numberOfTickets);
-        
-        // Create booking
+
+        // Create booking using correct schema field names
         const booking = await Booking.create({
-            user: req.user._id,
-            event: eventId,
-            numberOfTickets: parseInt(numberOfTickets),
-            totalAmount,
-            attendeeDetails: attendeeDetails || []
+            userId: req.user._id,
+            eventId,
+            ticketCount: count
         });
-        
-        // Update event available tickets
-        await event.bookTickets(parseInt(numberOfTickets));
-        
+
+        // Deduct tickets from event
+        event.ticketsRemaining -= count;
+        await event.save();
+
         res.json({
             success: true,
-            bookingReference: booking.bookingReference,
+            bookingId: booking._id,
             message: 'Booking confirmed successfully'
         });
     } catch (error) {
         console.error('Create booking error:', error);
-        res.status(500).json({
-            success: false,
-            message: error.message || 'Error creating booking'
-        });
+        res.status(500).json({ success: false, message: error.message || 'Error creating booking' });
     }
 };
 
 exports.getUserBookings = async (req, res) => {
     try {
-        const bookings = await Booking.find({ user: req.user._id })
-            .populate('event')
+        const bookings = await Booking.find({ userId: req.user._id })
+            .populate('eventId')
             .sort('-createdAt');
-        
+
         res.render('bookings/history', {
             title: 'My Bookings',
             bookings,
@@ -97,50 +88,33 @@ exports.getUserBookings = async (req, res) => {
 
 exports.cancelBooking = async (req, res) => {
     try {
-        const booking = await Booking.findById(req.params.id).populate('event');
-        
+        const booking = await Booking.findById(req.params.id).populate('eventId');
+
         if (!booking) {
-            return res.status(404).json({
-                success: false,
-                message: 'Booking not found'
-            });
+            return res.status(404).json({ success: false, message: 'Booking not found' });
         }
-        
-        // Check if user owns this booking
-        if (booking.user.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-            return res.status(403).json({
-                success: false,
-                message: 'Unauthorized'
-            });
+
+        // Check ownership
+        if (booking.userId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+            return res.status(403).json({ success: false, message: 'Unauthorized' });
         }
-        
-        // Check if event is in the future
-        if (new Date(booking.event.date) < new Date()) {
-            return res.status(400).json({
-                success: false,
-                message: 'Cannot cancel past events'
-            });
+
+        // Prevent cancelling past events
+        if (new Date(booking.eventId.date) < new Date()) {
+            return res.status(400).json({ success: false, message: 'Cannot cancel past events' });
         }
-        
-        // Update booking status
+
         booking.status = 'cancelled';
-        booking.cancelledAt = new Date();
         await booking.save();
-        
-        // Return tickets to event
-        const event = await Event.findById(booking.event._id);
-        event.availableTickets += booking.numberOfTickets;
+
+        // Return tickets to event pool
+        const event = await Event.findById(booking.eventId._id);
+        event.ticketsRemaining += booking.ticketCount;
         await event.save();
-        
-        res.json({
-            success: true,
-            message: 'Booking cancelled successfully'
-        });
+
+        res.json({ success: true, message: 'Booking cancelled successfully' });
     } catch (error) {
         console.error('Cancel booking error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error cancelling booking'
-        });
+        res.status(500).json({ success: false, message: 'Error cancelling booking' });
     }
 };
