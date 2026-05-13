@@ -8,9 +8,9 @@ A full-stack web application built for Advanced Events (Pty) Ltd to replace manu
 NameStudent NoRole
 [Member 1][Name][Student No]Team Lead / Project Coordinator
 [Member 2] Jininy Nkomo - 575936 - Backend Developer
-[Member 3][Name][Student No]Security / Auth Developer
-[Member 4][Name][Student No]Frontend Developer
-[Member 5] Eduard Herman - 602125 Database Engineer
+[Member 3] Nthabeleng Mathabathe - 600382 - Security / Auth Developer
+[Member 4] Stephen van der Merwe - 601789 - Frontend Developer
+[Member 5] Eduard Herman - 602125 - Database Engineer
 
 Tech Stack
 
