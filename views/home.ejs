@@ -23,10 +23,10 @@
         <!-- MAIN CONTENT -->
         <div class="container">
 
-            <!-- SEARCH BAR -->
-            <div style="text-align:center; margin-bottom:20px;">
-                <input type="text" placeholder="Search events..." />
-            </div>
+           <!-- SEARCH BAR -->
+<div style="text-align:center; margin-bottom:20px;">
+  <input type="text" id="searchInput" placeholder="Search events..." />
+</div>
 
             <!-- EVENTS GRID -->
             <div class="events">
@@ -67,6 +67,24 @@
         <div style="text-align:center; padding:20px; margin-top:40px; background:#111; color:white;">
             © 2026 Advanced Events Platform
         </div>
+        <script>
+  const searchInput = document.getElementById('searchInput');
+  const eventCards = document.querySelectorAll('.events .card');
 
+  searchInput.addEventListener('keyup', function() {
+    const query = this.value.toLowerCase();
+
+    eventCards.forEach(card => {
+      const title = card.querySelector('h3').textContent.toLowerCase();
+      const location = card.querySelector('p').textContent.toLowerCase();
+
+      if (title.includes(query) || location.includes(query)) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+</script>
     </body>
     </html>
