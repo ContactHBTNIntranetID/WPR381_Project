@@ -4,40 +4,106 @@
   <meta charset="UTF-8">
   <title>Admin Dashboard | Advanced Events</title>
   <link rel="stylesheet" href="/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+
+  <!-- NAVBAR -->
   <%- include('partials/header') %>
 
   <div class="container">
     <h1>Admin Dashboard</h1>
 
-    <div class="card">
-      <h3>Total Bookings</h3>
-      <p><%= totalBookings %></p>
-    </div>
+    <!-- Dashboard Grid -->
+    <div class="dashboard-grid">
+      <div class="card">
+        <h3>Popular Events</h3>
+        <canvas id="popularEventsChart"></canvas>
+      </div>
 
-   <div class="card">
-    <h3>Popular Events</h3>
-      <ul>
-        <% popularEvents.forEach(ev => { %>
-        <li><%= ev.eventDetails.title %> — <%= ev.totalTickets %> tickets</li>
-        <% }) %>
-      </ul>
-    </div>
+      <div class="card">
+        <h3>Capacity Usage</h3>
+        <canvas id="capacityUsageChart"></canvas>
+      </div>
 
-    <div class="card">
-      <h3>Capacity Usage</h3>
-      <table>
-        <tr><th>Event</th><th>Used</th><th>Capacity</th></tr>
-        <% capacityUsage.forEach(ev => { %>
-          <tr>
-            <td><%= ev.title %></td>
-            <td><%= ev.used %></td>
-            <td><%= ev.capacity %></td>
-          </tr>
-        <% }) %>
-      </table>
+      <div class="card">
+        <h3>Total Bookings</h3>
+        <canvas id="totalBookingsChart"></canvas>
+      </div>
     </div>
   </div>
+
+  <!-- Chart.js Script -->
+  <script>
+    // Popular Events Data
+    const popularEventsLabels = <%- JSON.stringify(popularEvents.map(ev => ev.eventDetails.title)) %>;
+    const popularEventsData = <%- JSON.stringify(popularEvents.map(ev => ev.totalTickets)) %>;
+
+    // Capacity Usage Data
+    const capacityLabels = <%- JSON.stringify(capacityUsage.map(ev => ev.title)) %>;
+    const capacityUsed = <%- JSON.stringify(capacityUsage.map(ev => ev.used)) %>;
+    const capacityTotal = <%- JSON.stringify(capacityUsage.map(ev => ev.capacity)) %>;
+
+    // Total Bookings Data
+    const totalBookings = <%- JSON.stringify(totalBookings) %>;
+
+    // Popular Events Chart
+    new Chart(document.getElementById('popularEventsChart'), {
+      type: 'bar',
+      data: {
+        labels: popularEventsLabels,
+        datasets: [{
+          label: 'Tickets Sold',
+          data: popularEventsData,
+          backgroundColor: 'rgba(54, 162, 235, 0.7)'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+
+    // Capacity Usage Chart
+    new Chart(document.getElementById('capacityUsageChart'), {
+      type: 'bar',
+      data: {
+        labels: capacityLabels,
+        datasets: [
+          {
+            label: 'Used',
+            data: capacityUsed,
+            backgroundColor: 'rgba(255, 99, 132, 0.7)'
+          },
+          {
+            label: 'Capacity',
+            data: capacityTotal,
+            backgroundColor: 'rgba(75, 192, 192, 0.7)'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+
+    // Total Bookings Chart (simple KPI donut)
+    new Chart(document.getElementById('totalBookingsChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Bookings'],
+        datasets: [{
+          data: [totalBookings],
+          backgroundColor: ['rgba(153, 102, 255, 0.7)']
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  </script>
+
 </body>
 </html>

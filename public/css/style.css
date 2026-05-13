@@ -633,3 +633,20 @@ a:hover {
     font-size: 28px;
   }
 }
+
+
+/* Make all charts bigger */
+canvas {
+  width: 100% !important;   /* stretch to fill parent card */
+  height: 400px !important; /* fixed height for readability */
+}
+
+/* Dashboard grid layout */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 20px;
+  width: 100%;         /* full width */
+  padding: 0 40px;     /* add side padding */
+}
