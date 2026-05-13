@@ -82,7 +82,7 @@ exports.login = async (req, res) => {
         }
         
         // Check password
-        const isMatch = await user.comparePassword(password);
+        const isMatch = await user.matchPassword(password);
         if (!isMatch) {
             return res.render('auth/login', {
                 title: 'Login',
@@ -104,16 +104,26 @@ exports.login = async (req, res) => {
         user.lastLogin = new Date();
         await user.save();
         
-        // Create session
-        req.session.userId = user._id;
-        req.session.userRole = user.role;
-        
-        // Redirect based on role
-        if (user.role === 'admin') {
-            res.redirect('/dashboard/admin');
-        } else {
-            res.redirect('/dashboard/user');
-        }
+        // Regenerate session ID to prevent session fixation attacks
+        req.session.regenerate((err) => {
+            if (err) {
+                console.error('Session regeneration error:', err);
+                return res.render('auth/login', {
+                    title: 'Login',
+                    error: 'Login failed. Please try again.',
+                    user: null
+                });
+            }
+
+            req.session.userId = user._id;
+            req.session.userRole = user.role;
+
+            if (user.role === 'admin') {
+                res.redirect('/dashboard/admin');
+            } else {
+                res.redirect('/dashboard/user');
+            }
+        });
     } catch (error) {
         console.error('Login error:', error);
         res.render('auth/login', {

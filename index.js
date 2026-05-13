@@ -2,9 +2,12 @@ const express = require('express');
 const session = require('express-session');
 const dotenv = require('dotenv');
 const path = require('path');
+const helmet = require('helmet');
+const morgan = require('morgan');
 const connectDB = require('./config/database');
 const sessionConfig = require('./config/session');
 const errorHandler = require('./middleware/errorHandler');
+const { generalLimiter } = require('./middleware/rateLimiter');
 
 // Load environment variables
 dotenv.config();
@@ -14,6 +17,15 @@ const app = express();
 
 // Connect to MongoDB
 connectDB();
+
+// Security headers — sets X-Frame-Options, X-XSS-Protection, HSTS, etc.
+app.use(helmet());
+
+// HTTP request logging
+app.use(morgan('dev'));
+
+// General rate limiter applied to all routes
+app.use(generalLimiter);
 
 // Middleware
 app.use(express.json());
