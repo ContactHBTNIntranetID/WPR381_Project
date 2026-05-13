@@ -274,6 +274,7 @@ form textarea {
 }
 
 /* ===== SEARCH FORM — horizontal ===== */
+.search-bar,
 form[method="GET"] {
   flex-direction: row;
   flex-wrap: wrap;
