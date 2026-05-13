@@ -1,0 +1,65 @@
+<%- include('../partials/header') %>
+<div class="container">
+  <h1>Manage Enquiries</h1>
+  <% if (enquiries && enquiries.length > 0) { %>
+    <table style="width:100%; border-collapse:collapse; background:white; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+      <thead style="background:#111; color:white;">
+        <tr>
+          <th style="padding:12px; text-align:left;">Name</th>
+          <th style="padding:12px; text-align:left;">Email</th>
+          <th style="padding:12px; text-align:left;">Category</th>
+          <th style="padding:12px; text-align:left;">Subject</th>
+          <th style="padding:12px; text-align:left;">Status</th>
+          <th style="padding:12px; text-align:left;">Date</th>
+          <th style="padding:12px; text-align:left;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% enquiries.forEach(enquiry => { %>
+          <tr>
+            <td style="padding:11px 12px;"><%= enquiry.name %></td>
+            <td style="padding:11px 12px;"><%= enquiry.email %></td>
+            <td style="padding:11px 12px;"><%= enquiry.category %></td>
+            <td style="padding:11px 12px;"><%= enquiry.subject %></td>
+            <td style="padding:11px 12px;"><%= enquiry.status %></td>
+            <td style="padding:11px 12px;"><%= new Date(enquiry.createdAt).toDateString() %></td>
+            <td style="padding:11px 12px;">
+              <button style="background:#888; margin-bottom:4px;" onclick="replyEnquiry('<%= enquiry._id %>')">Reply</button>
+              <button onclick="updateStatus('<%= enquiry._id %>', 'resolved')">Resolve</button>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="7" style="padding:10px 12px; background:#f0f0f0; font-size:13px;">
+              <strong>Message:</strong> <%= enquiry.message %>
+              <% if (enquiry.adminResponse && enquiry.adminResponse.message) { %>
+                <br><strong>Admin Reply:</strong> <%= enquiry.adminResponse.message %>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <p>No enquiries submitted yet.</p>
+  <% } %>
+</div>
+<script>
+function updateStatus(id, status) {
+  fetch(`/enquiries/${id}/status`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status })
+  }).then(() => location.reload());
+}
+function replyEnquiry(id) {
+  const reply = prompt('Enter your reply:');
+  if (reply) {
+    fetch(`/enquiries/${id}/reply`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reply })
+    }).then(() => location.reload());
+  }
+}
+</script>
+<%- include('../partials/footer') %>

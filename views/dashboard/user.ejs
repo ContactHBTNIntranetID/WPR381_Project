@@ -1,0 +1,41 @@
+<%- include('../partials/header') %>
+<div class="container">
+  <h1>Welcome, <%= user.name %> 👋</h1>
+
+  <div class="events" style="margin-bottom:30px;">
+    <div class="card" style="text-align:center;">
+      <h2><%= stats.totalBookings %></h2>
+      <p>Total Bookings</p>
+    </div>
+    <div class="card" style="text-align:center;">
+      <h2>R <%= stats.totalSpent.toFixed(2) %></h2>
+      <p>Total Spent</p>
+    </div>
+    <div class="card" style="text-align:center;">
+      <h2><%= upcomingBookings.length %></h2>
+      <p>Upcoming Events</p>
+    </div>
+  </div>
+
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <h2>Recent Bookings</h2>
+    <a href="/bookings/my"><button style="background:#888;">View All</button></a>
+  </div>
+
+  <% if (bookings && bookings.length > 0) { %>
+    <div class="events" style="margin-top:16px;">
+      <% bookings.forEach(booking => { %>
+        <div class="card">
+          <h3><%= booking.event ? booking.event.title : 'Event Removed' %></h3>
+          <p>📅 <%= booking.event ? new Date(booking.event.date).toDateString() : 'N/A' %></p>
+          <p>🎟 Tickets: <%= booking.numberOfTickets %></p>
+          <p>💰 R <%= booking.totalAmount %></p>
+          <p>Status: <strong><%= booking.status %></strong></p>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <p style="margin-top:16px;">No bookings yet. <a href="/events">Browse events</a> to get started.</p>
+  <% } %>
+</div>
+<%- include('../partials/footer') %>

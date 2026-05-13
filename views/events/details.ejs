@@ -1,0 +1,43 @@
+<%- include('../partials/header') %>
+<div class="container">
+  <a href="/events"><button style="margin-bottom:20px; background:#888;">← Back</button></a>
+  <div class="auth-box" style="width:100%; max-width:700px;">
+    <h2><%= event.title %></h2>
+    <p style="margin-bottom:16px; color:#555;"><%= event.description %></p>
+    <p><strong>📅 Date:</strong> <%= moment(event.date).format('DD MMMM YYYY, HH:mm') %></p>
+    <p><strong>📍 Location:</strong> <%= event.location %></p>
+    <p><strong>🎟 Tickets:</strong> <%= event.availableTickets %> / <%= event.totalCapacity %> available</p>
+    <p><strong>💰 Price:</strong> R <%= event.price %></p>
+    <p><strong>📌 Status:</strong> <%= event.status %></p>
+
+    <% if (user && event.availableTickets > 0 && event.status === 'upcoming') { %>
+      <a href="/bookings/book/<%= event._id %>">
+        <button style="width:100%; margin-top:20px;">Book Tickets</button>
+      </a>
+    <% } else if (!user) { %>
+      <p class="center" style="margin-top:16px;">Please <a href="/auth/login">login</a> to book tickets.</p>
+    <% } else { %>
+      <p style="margin-top:16px; color:red;" class="center">Tickets unavailable.</p>
+    <% } %>
+
+    <% if (user && user.role === 'admin') { %>
+      <div style="margin-top:20px; display:flex; gap:10px;">
+        <a href="/events/<%= event._id %>/edit"><button style="background:#888;">Edit</button></a>
+        <button style="background:#e74c3c;" onclick="deleteEvent('<%= event._id %>')">Delete</button>
+      </div>
+    <% } %>
+  </div>
+</div>
+<script>
+function deleteEvent(id) {
+  if (confirm('Are you sure you want to delete this event?')) {
+    fetch(`/events/${id}`, { method: 'DELETE' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) window.location.href = '/events';
+        else alert('Error: ' + data.message);
+      });
+  }
+}
+</script>
+<%- include('../partials/footer') %>

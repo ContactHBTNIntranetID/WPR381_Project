@@ -1,0 +1,57 @@
+<%- include('../partials/header') %>
+<div class="container">
+  <div class="auth-box" style="width:100%; max-width:500px;">
+    <h2>Book Tickets</h2>
+    <div style="background:#f0f4ff; border-left:4px solid #4a90e2; padding:12px; border-radius:6px; margin-bottom:20px;">
+      <h3><%= event.title %></h3>
+      <p>📅 <%= new Date(event.date).toDateString() %></p>
+      <p>📍 <%= event.location %></p>
+      <p>🎟 <%= event.availableTickets %> tickets available</p>
+      <p>💰 R <%= event.price %> per ticket</p>
+    </div>
+    <% if (error) { %>
+      <p style="color:red; margin-bottom:10px;"><%= error %></p>
+    <% } %>
+    <form id="bookingForm" data-price="<%= event.price %>" data-eventid="<%= event._id %>">
+      <label style="font-weight:bold;">Number of Tickets</label>
+      <input type="number" id="numberOfTickets" name="numberOfTickets" min="1" max="<%= event.availableTickets %>" value="1" required>
+      <p style="font-size:18px; font-weight:bold; margin:8px 0;">Total: R <span id="totalAmount"><%= event.price %></span></p>
+      <button type="submit" style="width:100%;">Confirm Booking</button>
+      <a href="/events/<%= event._id %>"><button type="button" style="background:#888; width:100%; margin-top:6px;">Cancel</button></a>
+    </form>
+    <p id="bookingMessage" style="display:none; margin-top:12px; text-align:center;"></p>
+  </div>
+</div>
+
+<script>
+  var form = document.getElementById('bookingForm');
+  var ticketPrice = parseFloat(form.getAttribute('data-price'));
+  var eventId = form.getAttribute('data-eventid');
+
+  document.getElementById('numberOfTickets').addEventListener('input', function () {
+    document.getElementById('totalAmount').textContent = (this.value * ticketPrice).toFixed(2);
+  });
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var tickets = document.getElementById('numberOfTickets').value;
+    var res = await fetch('/bookings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ eventId: eventId, numberOfTickets: tickets })
+    });
+    var data = await res.json();
+    var msg = document.getElementById('bookingMessage');
+    msg.style.display = 'block';
+    if (data.success) {
+      msg.style.color = 'green';
+      msg.textContent = 'Booking confirmed! Reference: ' + data.bookingReference;
+      setTimeout(function () { window.location.href = '/bookings/my'; }, 2000);
+    } else {
+      msg.style.color = 'red';
+      msg.textContent = data.message;
+    }
+  });
+</script>
+
+<%- include('../partials/footer') %>

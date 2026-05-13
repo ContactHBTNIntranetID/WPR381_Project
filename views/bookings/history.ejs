@@ -1,0 +1,36 @@
+<%- include('../partials/header') %>
+<div class="container">
+  <h1>My Bookings</h1>
+  <% if (bookings && bookings.length > 0) { %>
+    <div class="events">
+      <% bookings.forEach(booking => { %>
+        <div class="card">
+          <h3><%= booking.event ? booking.event.title : 'Event Removed' %></h3>
+          <p>📅 <%= booking.event ? new Date(booking.event.date).toDateString() : 'N/A' %></p>
+          <p>🎟 Tickets: <%= booking.numberOfTickets %></p>
+          <p>💰 Total: R <%= booking.totalAmount %></p>
+          <p>🔖 Ref: <strong><%= booking.bookingReference %></strong></p>
+          <p>Status: <strong><%= booking.status %></strong></p>
+          <% if (booking.status === 'confirmed' && booking.event && new Date(booking.event.date) > new Date()) { %>
+            <button style="background:#e74c3c; margin-top:8px; width:100%;" onclick="cancelBooking('<%= booking._id %>')">Cancel Booking</button>
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <p class="center" style="margin-top:40px;">No bookings yet. <a href="/events">Browse events</a></p>
+  <% } %>
+</div>
+<script>
+function cancelBooking(id) {
+  if (confirm('Are you sure you want to cancel this booking?')) {
+    fetch(`/bookings/${id}/cancel`, { method: 'POST' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) location.reload();
+        else alert('Error: ' + data.message);
+      });
+  }
+}
+</script>
+<%- include('../partials/footer') %>
