@@ -57,7 +57,4 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Alias so authController.comparePassword() also works
-userSchema.methods.comparePassword = userSchema.methods.matchPassword;
-
 module.exports = mongoose.model('User', userSchema);

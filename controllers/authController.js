@@ -4,7 +4,7 @@ exports.showLoginPage = (req, res) => {
     if (req.session.userId) {
         return res.redirect('/dashboard/user');
     }
-    res.render('login', { 
+    res.render('auth/login', { 
         title: 'Login',
         user: req.user,
         error: null 
@@ -15,7 +15,7 @@ exports.showRegisterPage = (req, res) => {
     if (req.session.userId) {
         return res.redirect('/dashboard/user');
     }
-    res.render('register', { 
+    res.render('auth/register', { 
         title: 'Register',
         user: req.user,
         error: null 
@@ -28,7 +28,7 @@ exports.register = async (req, res) => {
         
         // Validation
         if (password !== confirmPassword) {
-            return res.render('register', {
+            return res.render('auth/register', {
                 title: 'Register',
                 error: 'Passwords do not match',
                 user: null
@@ -38,7 +38,7 @@ exports.register = async (req, res) => {
         // Check if user exists
         const existingUser = await User.findOne({ email: email.toLowerCase() });
         if (existingUser) {
-            return res.render('register', {
+            return res.render('auth/register', {
                 title: 'Register',
                 error: 'Email already registered',
                 user: null
@@ -59,7 +59,7 @@ exports.register = async (req, res) => {
         res.redirect('/dashboard/user');
     } catch (error) {
         console.error('Registration error:', error);
-        res.render('register', {
+        res.render('auth/register', {
             title: 'Register',
             error: error.message || 'Registration failed',
             user: null
@@ -74,7 +74,7 @@ exports.login = async (req, res) => {
         // Find user
         const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
         if (!user) {
-            return res.render('login', {
+            return res.render('auth/login', {
                 title: 'Login',
                 error: 'Invalid credentials',
                 user: null
@@ -84,7 +84,7 @@ exports.login = async (req, res) => {
         // Check password
         const isMatch = await user.matchPassword(password);
         if (!isMatch) {
-            return res.render('login', {
+            return res.render('auth/login', {
                 title: 'Login',
                 error: 'Invalid credentials',
                 user: null
@@ -93,7 +93,7 @@ exports.login = async (req, res) => {
         
         // Check if user is active
         if (!user.isActive) {
-            return res.render('login', {
+            return res.render('auth/login', {
                 title: 'Login',
                 error: 'Account is deactivated',
                 user: null
@@ -108,7 +108,7 @@ exports.login = async (req, res) => {
         req.session.regenerate((err) => {
             if (err) {
                 console.error('Session regeneration error:', err);
-                return res.render('login', {
+                return res.render('auth/login', {
                     title: 'Login',
                     error: 'Login failed. Please try again.',
                     user: null
@@ -126,7 +126,7 @@ exports.login = async (req, res) => {
         });
     } catch (error) {
         console.error('Login error:', error);
-        res.render('login', {
+        res.render('auth/login', {
             title: 'Login',
             error: 'Login failed. Please try again.',
             user: null
@@ -139,6 +139,6 @@ exports.logout = (req, res) => {
         if (err) {
             console.error('Logout error:', err);
         }
-        res.redirect('/login');
+        res.redirect('/auth/login');
     });
 };

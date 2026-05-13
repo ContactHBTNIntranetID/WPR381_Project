@@ -11,12 +11,18 @@ exports.showContactPage = (req, res) => {
 
 exports.submitEnquiry = async (req, res) => {
     try {
-        const { name, email, subject, message } = req.body;
-
-        const enquiryData = { name, email, subject, message };
-
+        const { name, email, subject, message, category } = req.body;
+        
+        const enquiryData = {
+            name,
+            email,
+            subject,
+            message,
+            category: category || 'General'
+        };
+        
         if (req.user) {
-            enquiryData.userId = req.user._id;
+            enquiryData.user = req.user._id;
         }
         
         await Enquiry.create(enquiryData);
@@ -41,7 +47,7 @@ exports.submitEnquiry = async (req, res) => {
 exports.getEnquiries = async (req, res) => {
     try {
         const enquiries = await Enquiry.find()
-            .populate('userId', 'name email')
+            .populate('user', 'name email')
             .sort('-createdAt');
         
         res.render('enquiries/manage', {
