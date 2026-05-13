@@ -259,12 +259,45 @@ button:active {
   box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
 }
 
-/* ===== FORMS ===== */
+/* ===== FORMS — vertical (auth, create, edit) ===== */
 form {
   display: flex;
   flex-direction: column;
   gap: 14px;
   max-width: 420px;
+}
+
+form input,
+form select,
+form textarea {
+  width: 100%;
+}
+
+/* ===== SEARCH FORM — horizontal ===== */
+form[method="GET"] {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  max-width: 100%;
+  background: white;
+  padding: 16px 20px;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  margin-bottom: 28px;
+  border: 1px solid #eef1f8;
+  gap: 10px;
+}
+
+form[method="GET"] input,
+form[method="GET"] select {
+  flex: 1;
+  min-width: 140px;
+  width: auto;
+}
+
+form[method="GET"] button {
+  width: auto;
+  flex-shrink: 0;
 }
 
 /* ===== AUTH BOX ===== */
@@ -384,32 +417,6 @@ form {
   text-align: center;
 }
 
-/* ===== SEARCH BAR ===== */
-.search-bar,
-form[method="GET"] {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: center;
-  background: white;
-  padding: 20px 24px;
-  border-radius: 16px;
-  box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.04),
-    0 8px 20px rgba(0, 0, 0, 0.06);
-  margin-bottom: 32px;
-  border: 1px solid #eef1f8;
-}
-
-.search-bar input,
-.search-bar select,
-form[method="GET"] input,
-form[method="GET"] select {
-  flex: 1;
-  min-width: 140px;
-  width: auto;
-}
-
 /* ===== TABLES ===== */
 table {
   width: 100%;
@@ -494,7 +501,6 @@ div[style*="background:#111"] {
   flex: 1;
   min-width: 160px;
   text-align: center;
-  border-top: none;
   background: linear-gradient(145deg, #ffffff, #f8faff);
 }
 
@@ -603,6 +609,17 @@ a:hover {
     width: 100%;
     margin: 24px 16px;
     padding: 28px 24px;
+  }
+
+  form[method="GET"] {
+    flex-direction: column;
+  }
+
+  form[method="GET"] input,
+  form[method="GET"] select,
+  form[method="GET"] button {
+    width: 100%;
+    flex: none;
   }
 
   table th,
