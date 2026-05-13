@@ -1,6 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const dotenv = require('dotenv');
+dotenv.config();
 const path = require('path');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -10,7 +11,6 @@ const errorHandler = require('./middleware/errorHandler');
 const { generalLimiter } = require('./middleware/rateLimiter');
 
 // Load environment variables
-dotenv.config();
 
 // Initialize express app
 const app = express();
